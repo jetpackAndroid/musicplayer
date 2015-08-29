@@ -36,7 +36,7 @@ public class MainActivity extends ActionBarActivity implements SongAdapter.custo
     private ListView songsView;
     public SongAdapter songAdapter;
     private MusicController controller;
-    private boolean paused=false, playbackPaused=false;
+    private boolean paused=true, playbackPaused=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
