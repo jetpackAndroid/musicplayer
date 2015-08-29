@@ -44,15 +44,6 @@ public class CanvasView extends View {
 
     public CanvasView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
-        mPath = new Path();
-        mPaint = new Paint();
-
-        mPaint.setAntiAlias(true);
-        mPaint.setColor(Color.BLACK);
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeJoin(Paint.Join.ROUND);
-        mPaint.setStrokeWidth(4f);
 
     }
 }

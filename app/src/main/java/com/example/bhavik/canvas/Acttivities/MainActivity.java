@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.bhavik.canvas.Controller.MusicController;
 import com.example.bhavik.canvas.CustomAdapters.SongAdapter;
+import com.example.bhavik.canvas.Fragments.MusicFragment;
 import com.example.bhavik.canvas.Modal.Songs;
 import com.example.bhavik.canvas.R;
 import com.example.bhavik.canvas.Service.MusicService;
@@ -52,9 +53,9 @@ public class MainActivity extends ActionBarActivity implements SongAdapter.custo
             }
         });
         songAdapter = new SongAdapter(this, songList, MainActivity.this);
-
         songsView.setAdapter(songAdapter);
-
+        MusicFragment musicFragment = new MusicFragment();
+        getFragmentManager().beginTransaction().replace(R.id.mainContainer, musicFragment,MusicFragment.TAG).commit();
         setController();
     }
     private void setController(){
@@ -83,7 +84,6 @@ public class MainActivity extends ActionBarActivity implements SongAdapter.custo
             setController();
             playbackPaused = false;
         }
-
         controller.show(0);
     }
 
@@ -275,5 +275,15 @@ public class MainActivity extends ActionBarActivity implements SongAdapter.custo
     @Override
     public int getAudioSessionId() {
         return 0;
+    }
+
+    public static MainActivity getMainActivity() {
+        return mainActivity;
+    }
+
+    private static MainActivity mainActivity;
+
+    public static void setMainActivity(MainActivity mainActivity) {
+        MainActivity.mainActivity = mainActivity;
     }
 }
