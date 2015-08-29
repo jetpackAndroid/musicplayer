@@ -8,11 +8,14 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.bhavik.canvas.Acttivities.MainActivity;
 import com.example.bhavik.canvas.R;
 import com.example.bhavik.canvas.Service.MusicService;
 
 public class MusicFragment extends Fragment {
+    public static String TAG = MusicFragment.class.getSimpleName();
     public MusicFragment() {
         // Required empty public constructor
     }
@@ -29,7 +32,8 @@ public class MusicFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.music_current_playing, container, false);
 
-
+        Toast.makeText(getActivity(),"Fragment",Toast.LENGTH_LONG).show();
         return view;
     }
+
 }
