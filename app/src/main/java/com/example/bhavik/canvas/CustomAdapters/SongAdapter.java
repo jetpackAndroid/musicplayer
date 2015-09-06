@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.example.bhavik.canvas.Fragments.MusicFragment;
 import com.example.bhavik.canvas.Modal.Songs;
 import com.example.bhavik.canvas.R;
 import java.util.ArrayList;
@@ -19,17 +21,19 @@ public final class SongAdapter extends BaseAdapter {
     private ArrayList<Songs> songsList;
     private LayoutInflater layoutInflater;
     private Context mContext;
+    private MusicFragment mMusicFragment;
 
-    public final SongAdapter.customButtonListener mcustomListner;
+//    public final SongAdapter.customButtonListener mcustomListner;
 
     public interface customButtonListener {
         void onButtonClickListner(int position,String value);
     }
 
-    public SongAdapter(Context context, ArrayList<Songs> theList, SongAdapter.customButtonListener customButtonListener) {
+    public SongAdapter(Context context, ArrayList<Songs> theList, MusicFragment musicFragment) {
         this.songsList = theList;
         mContext = context;
-        mcustomListner = customButtonListener;
+//        mcustomListner = customButtonListener;
+        this.mMusicFragment = musicFragment;
         this.layoutInflater = ( LayoutInflater )context. getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -77,9 +81,11 @@ public final class SongAdapter extends BaseAdapter {
             vi.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SongAdapter.this.mcustomListner.onButtonClickListner(b, "one");
+                    mMusicFragment.onItemClick(null, view, b, -1);
                 }
             });
+            holder.songTitle.setTag(i);
+            holder.artistName.setTag(i);
         }
         return vi;
     }
