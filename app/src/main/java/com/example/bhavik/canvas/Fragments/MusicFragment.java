@@ -176,8 +176,7 @@ public class MusicFragment extends Fragment implements AdapterView.OnItemClickLi
     public void onResume() {
         super.onResume();
         paused = false;
-        MainActivity.getMainActivity().passMusicList(songList);
-//        passSongList.completeSongList(songList);
+//        MainActivity.getMainActivity().passMusicList(songList);
     }
 
     @Override

@@ -167,7 +167,11 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
         // Start Main fragment after service connection. Just to pass song list otherwise Fragment called first then service,
         // which gives NULL pointer Exception
         MusicFragment musicFragment = new MusicFragment();
