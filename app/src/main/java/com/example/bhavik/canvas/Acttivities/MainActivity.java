@@ -4,33 +4,21 @@ package com.example.bhavik.canvas.Acttivities;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.IBinder;
-import android.os.PersistableBundle;
-import android.provider.MediaStore;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ListView;
-import android.widget.MediaController;
-import android.widget.Toast;
 
-import com.example.bhavik.canvas.Controller.MusicController;
-import com.example.bhavik.canvas.CustomAdapters.SongAdapter;
 import com.example.bhavik.canvas.Fragments.MusicFragment;
 import com.example.bhavik.canvas.Fragments.SingleMusicFragment;
 import com.example.bhavik.canvas.Modal.Songs;
 import com.example.bhavik.canvas.R;
 import com.example.bhavik.canvas.Service.MusicService;
+
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -47,6 +35,7 @@ public class MainActivity extends ActionBarActivity {
         setMainActivity(this);
 
         if(playIntent==null){
+            playIntent = null;
             playIntent = new Intent(this, MusicService.class);
             bindService(playIntent, musicConnection, this.BIND_AUTO_CREATE);
             startService(playIntent);
