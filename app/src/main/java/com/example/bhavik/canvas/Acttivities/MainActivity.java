@@ -35,7 +35,6 @@ public class MainActivity extends ActionBarActivity {
         setMainActivity(this);
 
         if(playIntent==null){
-            playIntent = null;
             playIntent = new Intent(this, MusicService.class);
             bindService(playIntent, musicConnection, this.BIND_AUTO_CREATE);
             startService(playIntent);
