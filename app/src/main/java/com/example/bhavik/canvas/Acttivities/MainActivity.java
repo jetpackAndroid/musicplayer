@@ -171,4 +171,16 @@ public class MainActivity extends ActionBarActivity {
     public void start() {
         MainActivity.musicService.go();
     }
+
+    public boolean checkIsPlaying() {
+        return MainActivity.musicService.isPng();
+    }
+
+    public void pauseMusic() {
+        MainActivity.musicService.pausePlayer();
+    }
+
+    public void playMusic() {
+        MainActivity.musicService.go();
+    }
 }

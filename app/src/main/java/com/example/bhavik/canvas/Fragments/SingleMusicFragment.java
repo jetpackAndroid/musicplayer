@@ -84,6 +84,13 @@ public class SingleMusicFragment extends Fragment implements View.OnClickListene
 
             case R.id.playPause:
 
+                if (MainActivity.getMainActivity().checkIsPlaying()) {
+                    MainActivity.getMainActivity().pauseMusic();
+                    playPause.setBackgroundResource(R.drawable.play_button_img);
+                } else {
+                    playPause.setBackgroundResource(R.drawable.pause_button_img);
+                    MainActivity.getMainActivity().playMusic();
+                }
                 Drawable drawable = playPause.getBackground();
                 String draw = drawable.toString();
                 if (draw.equalsIgnoreCase("mediaplay4x")) {
