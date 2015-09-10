@@ -1,27 +1,42 @@
 package com.example.bhavik.canvas.Fragments;
 
 import android.app.Activity;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Switch;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.example.bhavik.canvas.Acttivities.MainActivity;
+import com.example.bhavik.canvas.Modal.Songs;
 import com.example.bhavik.canvas.R;
 
 
 public class SingleMusicFragment extends Fragment implements View.OnClickListener {
+
     public static final String TAG = SingleMusicFragment.class.getSimpleName();
-    ImageView playPause, stepBackward, stepForward;
+    ImageView playPause, stepBackward, stepForward, albumArt;
+    SeekBar seekBar;
+
+    Songs song = null;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void setArguments(Bundle args) {
+        super.setArguments(args);
+        if (args.containsKey("Song")) {
+            song = (Songs) args.getSerializable("Song");
+        }
     }
 
     @Override
@@ -34,14 +49,17 @@ public class SingleMusicFragment extends Fragment implements View.OnClickListene
         playPause = (ImageView) view.findViewById(R.id.playPause);
         stepBackward = (ImageView) view.findViewById(R.id.stepBackward);
         stepForward = (ImageView) view.findViewById(R.id.stepForward);
-
+        albumArt = (ImageView) view.findViewById(R.id.singleMusicAlbumArt);
+        seekBar = (SeekBar) view.findViewById(R.id.songSeekbar);
         // set listeners
         playPause.setOnClickListener(SingleMusicFragment.this);
         stepBackward.setOnClickListener(SingleMusicFragment.this);
         stepForward.setOnClickListener(SingleMusicFragment.this);
 
+        if (song != null)
+            albumArt.setImageURI(song.getAlbumArtPath());
 
-
+        seekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY));
         return view;
     }
 

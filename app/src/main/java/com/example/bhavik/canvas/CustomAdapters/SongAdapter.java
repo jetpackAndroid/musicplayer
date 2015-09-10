@@ -5,11 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.bhavik.canvas.Fragments.MusicFragment;
 import com.example.bhavik.canvas.Modal.Songs;
 import com.example.bhavik.canvas.R;
+
 import java.util.ArrayList;
 
 
@@ -24,7 +26,6 @@ public final class SongAdapter extends BaseAdapter {
     private MusicFragment mMusicFragment;
 
 //    public final SongAdapter.customButtonListener mcustomListner;
-
     public interface customButtonListener {
         void onButtonClickListner(int position,String value);
     }
@@ -55,6 +56,7 @@ public final class SongAdapter extends BaseAdapter {
 
     public class ViewHolder{
         TextView songTitle, artistName;
+        ImageView imageView;
     }
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
@@ -66,6 +68,7 @@ public final class SongAdapter extends BaseAdapter {
 
             holder.songTitle = (TextView) vi.findViewById(R.id.songTitle);
             holder.artistName = (TextView) vi.findViewById(R.id.artistName);
+            holder.imageView = (ImageView) vi.findViewById(R.id.albumArt);
 
             vi.setTag(holder);
         }
@@ -77,6 +80,7 @@ public final class SongAdapter extends BaseAdapter {
             Songs currentSong = songsList.get(i);
             holder.songTitle.setText(currentSong.getTitle());
             holder.artistName.setText(currentSong.getArtist());
+            holder.imageView.setImageURI(currentSong.getAlbumArtPath());
             final int b = i;
             vi.setOnClickListener(new View.OnClickListener() {
                 @Override

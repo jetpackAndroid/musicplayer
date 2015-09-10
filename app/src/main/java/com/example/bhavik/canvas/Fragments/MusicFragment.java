@@ -1,33 +1,26 @@
 package com.example.bhavik.canvas.Fragments;
 
 import android.app.Activity;
-import android.content.ComponentName;
+import android.app.Fragment;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.os.IBinder;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.MediaController;
-import android.widget.Toast;
 
 import com.example.bhavik.canvas.Acttivities.MainActivity;
-import com.example.bhavik.canvas.Controller.MusicController;
 import com.example.bhavik.canvas.CustomAdapters.SongAdapter;
 import com.example.bhavik.canvas.Modal.Songs;
 import com.example.bhavik.canvas.R;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -94,7 +87,6 @@ public class MusicFragment extends Fragment implements AdapterView.OnItemClickLi
         songsView.setAdapter(songAdapter);
 //        songsView.setOnItemClickListener(this);
 //        setController();
-
         return view;
     }
 
@@ -103,9 +95,12 @@ public class MusicFragment extends Fragment implements AdapterView.OnItemClickLi
 //        int songPosition = Integer.parseInt(view.getTag(position).toString());
         Songs selectedSong = songList.get(position);
         Bundle bundle = new Bundle();
-        bundle.putSerializable("Song",selectedSong);
+        bundle.putSerializable("Song", selectedSong);
         Log.d("demo", "position is " + position + "selected song model is " + selectedSong);
         MainActivity.getMainActivity().applyFragment(SingleMusicFragment.TAG, bundle);
+        MainActivity.getMainActivity().passMusicList(songList);
+        MainActivity.getMainActivity().passSelectedSongPosition(position);
+        MainActivity.getMainActivity().start();
     }
 //    private void setController(){
 //        //set the controller up
@@ -155,12 +150,20 @@ public class MusicFragment extends Fragment implements AdapterView.OnItemClickLi
         if(musicCursor != null && musicCursor.moveToFirst()){
             int titleColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE);
             int idColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
+            int albumID = musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
             int artistColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST);
             do{
                 long thisId = musicCursor.getLong(idColumn);
                 String thisTitle = musicCursor.getString(titleColumn);
+                long thisAlbumID = musicCursor.getLong(albumID);
                 String thisArtist = musicCursor.getString(artistColumn);
-                songList.add(new Songs(thisId, thisTitle, thisArtist));
+                String albumArtPath = "";
+
+                final Uri ART_CONTENT_URI = Uri.parse("content://media/external/audio/albumart");
+                Uri albumArtUri = ContentUris.withAppendedId(ART_CONTENT_URI, thisAlbumID);
+                String uri = albumArtUri.toString();
+                Log.d("albumArt", "path = + " + uri);
+                songList.add(new Songs(thisId, thisTitle, thisArtist, albumArtUri));
             }while(musicCursor.moveToNext());
         }
         musicCursor.close();

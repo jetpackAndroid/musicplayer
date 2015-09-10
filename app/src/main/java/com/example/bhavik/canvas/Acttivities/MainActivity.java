@@ -117,7 +117,6 @@ public class MainActivity extends ActionBarActivity {
 //        if (id == R.id.action_shuffle) {
 //            return true;
 //        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -125,19 +124,21 @@ public class MainActivity extends ActionBarActivity {
         return mainActivity;
     }
 
-
-
     public static void setMainActivity(MainActivity mainActivity) {
         MainActivity.mainActivity = mainActivity;
     }
+
     // Calling from MusicFragment to pass song list to service.
     public void passMusicList(ArrayList<Songs> songList){
         musicService.setMusicList(songList);
     }
 
+    public void passSelectedSongPosition(int position) {
+        musicService.setSong(position);
+    }
+
     @Override
     public void onBackPressed() {
-
         if(getFragmentManager().getBackStackEntryCount() == 0){
             this.finish();
         }
@@ -148,8 +149,6 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
-//        outState.put
     }
 
     @Override
@@ -164,5 +163,12 @@ public class MainActivity extends ActionBarActivity {
         // which gives NULL pointer Exception
         MusicFragment musicFragment = new MusicFragment();
         getFragmentManager().beginTransaction().replace(R.id.mainContainer, musicFragment,MusicFragment.TAG).commit();
+    }
+
+    /**
+     * Music Events
+     */
+    public void start() {
+        MainActivity.musicService.go();
     }
 }

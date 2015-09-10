@@ -1,47 +1,55 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.bhavik.canvas.Fragments.SingleMusicFragment">
+    tools:context="com.example.bhavik.canvas.Fragments.SingleMusicFragment"
+    android:background="@android:color/black">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="10"
         android:orientation="vertical"
         >
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_weight="5"
+            android:layout_height="390dp"
 
+            android:id="@+id/singleMusicAlbumArt"
             />
         <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:thumb="@null"
+            android:id="@+id/songSeekbar"
             />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_weight="3"
-            android:weightSum="10"
+            android:weightSum="9"
             android:orientation="horizontal"
+            android:gravity="center"
+
             >
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/mediastepbackward4x"
+                android:layout_height="wrap_content"
+                android:src="@drawable/previous_button_img"
                 android:id="@+id/stepBackward"
+                android:layout_weight="3"
                 />
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/mediaplay4x"
+                android:layout_height="wrap_content"
+                android:src="@drawable/play_button_img"
                 android:id="@+id/playPause"
+                android:layout_weight="3"
                 />
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/mediastepforward4x"
+                android:layout_height="wrap_content"
+                android:src="@drawable/next_button_img"
                 android:id="@+id/stepForward"
+                android:layout_weight="3"
                 />
         </LinearLayout>
     </LinearLayout>
