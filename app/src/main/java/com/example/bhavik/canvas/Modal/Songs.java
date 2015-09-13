@@ -1,7 +1,5 @@
 package com.example.bhavik.canvas.Modal;
 
-import android.net.Uri;
-
 import java.io.Serializable;
 
 /**
@@ -14,22 +12,33 @@ public class Songs implements Serializable {
     private String artist;
     private int totalNumberOfSongs;
     private String songName;
+    private String mAlbumArtPath;
 
-    public Uri getAlbumArtPath() {
-        return mAlbumArtPath;
-    }
-
-    public void setAlbumArtPath(Uri mAlbumArtPath) {
-        this.mAlbumArtPath = mAlbumArtPath;
-    }
-
-    private Uri mAlbumArtPath;
-
-    public Songs(long songId, String songTitle, String songArtist, Uri albumArtPath) {
+    public Songs(long songId, String songTitle, String songArtist, String albumArtPath, int duration) {
         id = songId;
         title = songTitle;
         artist = songArtist;
         mAlbumArtPath = albumArtPath;
+        this.duration = duration;
+    }
+
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    private int duration;
+
+    public String getAlbumArtPath() {
+        return mAlbumArtPath;
+    }
+
+    public void setAlbumArtPath(String mAlbumArtPath) {
+        this.mAlbumArtPath = mAlbumArtPath;
     }
 
     public long getId() {

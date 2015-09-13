@@ -1,12 +1,14 @@
 package com.example.bhavik.canvas.Fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +20,18 @@ import com.example.bhavik.canvas.Acttivities.MainActivity;
 import com.example.bhavik.canvas.Modal.Songs;
 import com.example.bhavik.canvas.R;
 
-
-public class SingleMusicFragment extends Fragment implements View.OnClickListener {
+/**
+ * I am starting SeekBar updation in OnResume and stoping it in OnStop(), Just handle runnable.
+ */
+public class SingleMusicFragment extends BaseFragment implements View.OnClickListener {
 
     public static final String TAG = SingleMusicFragment.class.getSimpleName();
-    ImageView playPause, stepBackward, stepForward, albumArt;
-    SeekBar seekBar;
+    public static ImageView playPause, stepBackward, stepForward, albumArt;
+    public static SeekBar seekBar;
+    Handler handler;
+    static int currentSongDuration;
+    Songs song = null, currentPlayingSong = null;
 
-    Songs song = null;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,10 +46,18 @@ public class SingleMusicFragment extends Fragment implements View.OnClickListene
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        seekBarUpdater(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.single_music_fragment, container, false);
+        handler = new Handler();
+
         Toast.makeText(MainActivity.getMainActivity(), "Fragment Applied", Toast.LENGTH_LONG).show();
         // find elements
         playPause = (ImageView) view.findViewById(R.id.playPause);
@@ -55,12 +69,61 @@ public class SingleMusicFragment extends Fragment implements View.OnClickListene
         playPause.setOnClickListener(SingleMusicFragment.this);
         stepBackward.setOnClickListener(SingleMusicFragment.this);
         stepForward.setOnClickListener(SingleMusicFragment.this);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int mProgress;
 
-        if (song != null)
-            albumArt.setImageURI(song.getAlbumArtPath());
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mProgress = progress;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                seekToPosition(mProgress);
+            }
+        });
+
+        if (checkMusicIsPlaying())
+            setSongConstraints();
+        else if (song != null)
+            albumArt.setImageURI(Uri.parse(song.getAlbumArtPath()));
 
         seekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY));
         return view;
+    }
+
+    public void setSongConstraints() {
+        currentPlayingSong = getCurrentPlayingSong();
+        if (currentPlayingSong != null) {
+            albumArt.setImageURI(Uri.parse(currentPlayingSong.getAlbumArtPath()));
+            currentSongDuration = getMusicDuration();
+        }
+    }
+
+    private void seekBarUpdater(boolean runCallBack) {
+        if (runCallBack)
+            handler.postDelayed(seekBarUpdate, 100);
+        else
+            handler.removeCallbacks(seekBarUpdate);
+    }
+
+    public Runnable seekBarUpdate = new Runnable() {
+        @Override
+        public void run() {
+            seekBar.setProgress(getCurrentMusicPosition());
+            handler.postDelayed(seekBarUpdate, 100);
+        }
+    };
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        seekBarUpdater(false);
     }
 
     @Override
@@ -72,40 +135,67 @@ public class SingleMusicFragment extends Fragment implements View.OnClickListene
     public void onDetach() {
         super.onDetach();
     }
-
     /**
      * Called when a view has been clicked.
      *
      * @param v The view that was clicked.
      */
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
 
             case R.id.playPause:
 
-                if (MainActivity.getMainActivity().checkIsPlaying()) {
-                    MainActivity.getMainActivity().pauseMusic();
+                if (checkMusicIsPlaying()) {
+                    pauseMusic();
+                    //setImageDrawable null to avoid imposing of one image on another.
+                    playPause.setImageDrawable(null);
                     playPause.setBackgroundResource(R.drawable.play_button_img);
+
                 } else {
+                    //setImageDrawable null to avoid imposing of one image on another.
+                    playPause.setImageDrawable(null);
                     playPause.setBackgroundResource(R.drawable.pause_button_img);
-                    MainActivity.getMainActivity().playMusic();
-                }
-                Drawable drawable = playPause.getBackground();
-                String draw = drawable.toString();
-                if (draw.equalsIgnoreCase("mediaplay4x")) {
-                    playPause.setBackgroundResource(R.drawable.mediaplay4x);
+                    playMusic();
                 }
                 break;
 
             case R.id.stepBackward:
+                playPrevious();
                 break;
 
             case R.id.stepForward:
+                playNext();
                 break;
 
             default:
                 break;
+        }
+    }
+
+    public static class SeekbarHandler extends Handler {
+
+
+        /**
+         * Default constructor associates this handler with the {@link Looper} for the
+         * current thread.
+         * <p/>
+         * If this thread does not have a looper, this handler won't be able to receive messages
+         * so an exception is thrown.
+         */
+        public SeekbarHandler() {
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            if (bundle.containsKey("CurrentSong")) {
+                Songs currentSong = (Songs) bundle.getSerializable("CurrentSong");
+                SingleMusicFragment.seekBar.setMax(currentSong.getDuration());
+                SingleMusicFragment.albumArt.setImageURI(Uri.parse(currentSong.getAlbumArtPath()));
+            }
         }
     }
 }

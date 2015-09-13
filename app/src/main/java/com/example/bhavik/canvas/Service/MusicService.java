@@ -1,6 +1,7 @@
 package com.example.bhavik.canvas.Service;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentUris;
@@ -9,16 +10,19 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.PowerManager;
-import android.provider.MediaStore;
+
+import com.example.bhavik.canvas.Acttivities.MainActivity;
+import com.example.bhavik.canvas.Fragments.SingleMusicFragment;
+import com.example.bhavik.canvas.Modal.Songs;
+import com.example.bhavik.canvas.R;
 
 import java.util.ArrayList;
 import java.util.Random;
-
-import com.example.bhavik.canvas.Acttivities.MainActivity;
-import com.example.bhavik.canvas.Modal.Songs;
-import com.example.bhavik.canvas.R;
 
 public class MusicService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener{
 
@@ -28,7 +32,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private ArrayList<Songs> songs;
     // Song Position
     private int songPosition;
-
+    //To remove seekbar callback of a song on next song
+    Handler handler = new Handler();
+    // Current playing song variable.
+    Songs currentPlayingSong;
     private final IBinder musicBind = new MusicBinder();
 
     private String songTitle="";
@@ -36,6 +43,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     private boolean shuffle=false;
     private Random rand;
+
+    SingleMusicFragment.SeekbarHandler seekbarHandler;
 
     public MusicService() {
     }
@@ -59,6 +68,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mediaPlayer.setOnErrorListener(this);
     }
 
+    public void stopMusic() {
+        mediaPlayer.stop();
+    }
     public void setMusicList(ArrayList<Songs> theList){
         songs = theList;
     }
@@ -70,18 +82,27 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
+//        return super.onStartCommand(intent, flags, startId);
+        return START_FLAG_REDELIVERY;
     }
+//
+//
+//    @Override
+//    public void onDestroy() {
+//        super
+//        stopForeground(true);
+//    }
+
 
     @Override
     public void onDestroy() {
-        stopForeground(true);
+        super.onDestroy();
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        mediaPlayer.stop();
-        mediaPlayer.release();
+//        mediaPlayer.stop();
+//        mediaPlayer.release();
         return  false;
     }
     public void setSong(int songIndex){
@@ -89,8 +110,14 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void playSong(){
+
+        // Setting Handler for setting album art and duration.
+        seekbarHandler = new SingleMusicFragment.SeekbarHandler();
+
         mediaPlayer.reset();
         Songs playSong = songs.get(songPosition);
+        // Save current playing song, to give access to other class.
+
         songTitle = playSong.getTitle();
         long currentSong = playSong.getId();
         Uri trackUri = ContentUris.withAppendedId(
@@ -103,7 +130,29 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         catch (Exception e){
             e.printStackTrace();
         }
+//        SingleMusicFragment.seekBar.setMax(getDur());
+        setCurrentSong(playSong);
+
+        // Pass Duration in message.
+        Message message = Message.obtain();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("CurrentSong", playSong);
+        message.setData(bundle);
+        seekbarHandler.sendMessage(message);
+
+
         mediaPlayer.prepareAsync();
+    }
+
+    public void setCurrentSong(Songs playSong) {
+        currentPlayingSong = playSong;
+    }
+
+    public Songs getCurrentPlayingSong() {
+        if (isPng())
+            return currentPlayingSong;
+        else
+            return null;
     }
 
     public int getPosn(){
@@ -139,6 +188,14 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     //skip to next
     public void playNext(){
+
+        // Remove previous Callback and pass another call back for music duration when song changed automatically.
+
+        handler.removeCallbacksAndMessages(new SingleMusicFragment());
+
+
+
+
         if(shuffle){
             int newSong=songPosition;
             while(newSong == songPosition){
@@ -169,8 +226,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public void onPrepared(MediaPlayer mediaPlayer) {
         mediaPlayer.start();
 //      assign the song name to songName
-        PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0,
-                new Intent(getApplicationContext(), MainActivity.class),
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        PendingIntent pi = PendingIntent.getActivity(MainActivity.getMainActivity(), 0,
+                new Intent(MainActivity.getMainActivity(), MainActivity.class),
                 PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification = new Notification();
         notification.tickerText = "Ticker Text";
@@ -178,6 +237,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         notification.flags |= Notification.FLAG_ONGOING_EVENT;
         notification.setLatestEventInfo(getApplicationContext(), "MusicPlayerSample",
                 "Playing: " + songTitle, pi);
+
+//        notificationManager.notify(NOTIFY_ID,notification);
         startForeground(NOTIFY_ID, notification);
     }
 
@@ -195,4 +256,5 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             playNext();
         }
     }
+
 }

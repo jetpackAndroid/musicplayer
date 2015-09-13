@@ -1,7 +1,6 @@
 package com.example.bhavik.canvas.Fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -25,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class MusicFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class MusicFragment extends BaseFragment implements AdapterView.OnItemClickListener {
     public static String TAG = MusicFragment.class.getSimpleName();
     Intent playIntent;
     boolean musicBound = false;
@@ -93,53 +92,19 @@ public class MusicFragment extends Fragment implements AdapterView.OnItemClickLi
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //        int songPosition = Integer.parseInt(view.getTag(position).toString());
+        if (checkMusicIsPlaying()) {
+            stopMusic();
+        }
         Songs selectedSong = songList.get(position);
         Bundle bundle = new Bundle();
         bundle.putSerializable("Song", selectedSong);
         Log.d("demo", "position is " + position + "selected song model is " + selectedSong);
-        MainActivity.getMainActivity().applyFragment(SingleMusicFragment.TAG, bundle);
         MainActivity.getMainActivity().passMusicList(songList);
         MainActivity.getMainActivity().passSelectedSongPosition(position);
-        MainActivity.getMainActivity().start();
-    }
-//    private void setController(){
-//        //set the controller up
-//        controller = new MusicController(MainActivity.getMainActivity());
-//        controller.setPrevNextListeners(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                playNext();
-//            }
-//
-//        }, new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                playPrev();
-//            }
-//        });
-//        controller.setMediaPlayer(this);
-//        controller.setAnchorView(mView.findViewById(R.id.song_list));
-//        controller.setEnabled(true);
-//    }
-    //play next
-    private void playNext(){
-        MainActivity.musicService.playNext();
-        if(playbackPaused){
-//            setController();
-            playbackPaused = false;
-        }
-//        controller.show(0);
+        playMusic();
+        MainActivity.getMainActivity().applyFragment(SingleMusicFragment.TAG, bundle);
     }
 
-    //play previous
-    private void playPrev(){
-        MainActivity.musicService.playPrev();
-        if(playbackPaused){
-//            setController();
-            playbackPaused=false;
-        }
-//        controller.show(0);
-    }
 
     public void getSongList(){
 //        We  can have _ID, ARTIST, TITLE, DISPLAY_NAME, DATA, ALBUM_ID, DURATION
@@ -152,18 +117,19 @@ public class MusicFragment extends Fragment implements AdapterView.OnItemClickLi
             int idColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
             int albumID = musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
             int artistColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST);
+            int duration = musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
             do{
                 long thisId = musicCursor.getLong(idColumn);
                 String thisTitle = musicCursor.getString(titleColumn);
                 long thisAlbumID = musicCursor.getLong(albumID);
                 String thisArtist = musicCursor.getString(artistColumn);
                 String albumArtPath = "";
+                int songDuration = musicCursor.getInt(duration);
 
                 final Uri ART_CONTENT_URI = Uri.parse("content://media/external/audio/albumart");
                 Uri albumArtUri = ContentUris.withAppendedId(ART_CONTENT_URI, thisAlbumID);
                 String uri = albumArtUri.toString();
-                Log.d("albumArt", "path = + " + uri);
-                songList.add(new Songs(thisId, thisTitle, thisArtist, albumArtUri));
+                songList.add(new Songs(thisId, thisTitle, thisArtist, uri, songDuration));
             }while(musicCursor.moveToNext());
         }
         musicCursor.close();
@@ -195,17 +161,7 @@ public class MusicFragment extends Fragment implements AdapterView.OnItemClickLi
         outState.putAll(outState);
     }
 
-    //    @Override
-//    public void onButtonClickListner(int position, String value) {
-//        Toast.makeText(MainActivity.this, "hi" + position, Toast.LENGTH_LONG).show();
-//        MainActivity.musicService.setSong(position);
-//        MainActivity.musicService.playSong();
-//        if(playbackPaused){
-//            setController();
-//            playbackPaused=false;
-//        }
-//        controller.show(0);
-//    }
+
 
     /**
      * Callback method to be invoked when an item in this AdapterView has
@@ -222,17 +178,6 @@ public class MusicFragment extends Fragment implements AdapterView.OnItemClickLi
      */
 
 
-//    @Override
-//    public void start() {
-//        MainActivity.musicService.go();
-//    }
-//
-//    @Override
-//    public void pause() {
-//        playbackPaused=true;
-//        MainActivity.musicService.pausePlayer();
-//    }
-//
 //    @Override
 //    public int getDuration() {
 //        if(MainActivity.musicService != null && musicBound && MainActivity.musicService.isPng())
@@ -254,38 +199,6 @@ public class MusicFragment extends Fragment implements AdapterView.OnItemClickLi
 //        MainActivity.musicService.seek(pos);
 //    }
 //
-//    @Override
-//    public boolean isPlaying() {
-//        if(MainActivity.musicService != null && musicBound)
-//            return MainActivity.musicService.isPng();
-//        else
-//            return false;
-//
-//    }
-//
-//    @Override
-//    public int getBufferPercentage() {
-//        return 0;
-//    }
-//
-//    @Override
-//    public boolean canPause() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean canSeekBackward() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean canSeekForward() {
-//        return true;
-//    }
-//
-//    @Override
-//    public int getAudioSessionId() {
-//        return 0;
-//    }
+
 
 }

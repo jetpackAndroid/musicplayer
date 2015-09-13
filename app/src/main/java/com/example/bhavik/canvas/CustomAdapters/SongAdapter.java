@@ -1,6 +1,7 @@
 package com.example.bhavik.canvas.CustomAdapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,7 +81,7 @@ public final class SongAdapter extends BaseAdapter {
             Songs currentSong = songsList.get(i);
             holder.songTitle.setText(currentSong.getTitle());
             holder.artistName.setText(currentSong.getArtist());
-            holder.imageView.setImageURI(currentSong.getAlbumArtPath());
+            holder.imageView.setImageURI(Uri.parse(currentSong.getAlbumArtPath()));
             final int b = i;
             vi.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -34,7 +34,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         setMainActivity(this);
 
-        if(playIntent==null){
+        if (playIntent == null && musicBound == false) {
             playIntent = new Intent(this, MusicService.class);
             bindService(playIntent, musicConnection, this.BIND_AUTO_CREATE);
             startService(playIntent);
@@ -47,15 +47,24 @@ public class MainActivity extends ActionBarActivity {
             //get service
             musicService = binder.getService();
 
-
+            MainActivity.setMusicService(musicService);
             musicBound = true;
         }
+
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
             musicBound = false;
-
         }
+
     };
+
+    public static MusicService getMusicService() {
+        return musicService;
+    }
+
+    public static void setMusicService(MusicService musicService) {
+        MainActivity.musicService = musicService;
+    }
 
     public void applyFragment(String TAG, Bundle bundle){
         fragmentTAG = TAG;
@@ -83,10 +92,16 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
     public void onDestroy() {
-        stopService(playIntent);
-        musicService = null;
+//        stopService(playIntent);
+//        musicService = null;
         super.onDestroy();
+        unbindService(musicConnection);
     }
 
     @Override
@@ -110,7 +125,7 @@ public class MainActivity extends ActionBarActivity {
             case R.id.action_end:
                 stopService(playIntent);
                 musicService = null;
-                System.exit(0);
+                finish();
                 break;
         }
 //        noinspection SimplifiableIfStatement
@@ -168,10 +183,6 @@ public class MainActivity extends ActionBarActivity {
     /**
      * Music Events
      */
-    public void start() {
-        MainActivity.musicService.go();
-    }
-
     public boolean checkIsPlaying() {
         return MainActivity.musicService.isPng();
     }
@@ -180,7 +191,4 @@ public class MainActivity extends ActionBarActivity {
         MainActivity.musicService.pausePlayer();
     }
 
-    public void playMusic() {
-        MainActivity.musicService.go();
-    }
 }
