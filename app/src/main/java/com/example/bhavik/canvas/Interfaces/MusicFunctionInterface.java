@@ -20,6 +20,8 @@ public interface MusicFunctionInterface {
 
     void playNext();
 
+    void startMusic();
+
     void playPrevious();
 
     void seekToPosition(int position);

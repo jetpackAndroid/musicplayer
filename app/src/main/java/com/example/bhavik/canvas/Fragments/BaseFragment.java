@@ -33,6 +33,11 @@ public class BaseFragment extends Fragment implements MusicFunctionInterface {
 
     @Override
     public void playMusic() {
+        getMusicService().playSong();
+    }
+
+    @Override
+    public void startMusic() {
         getMusicService().go();
     }
 

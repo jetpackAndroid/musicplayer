@@ -110,7 +110,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void playSong(){
-
         // Setting Handler for setting album art and duration.
         seekbarHandler = new SingleMusicFragment.SeekbarHandler();
 

@@ -2,6 +2,7 @@ package com.example.bhavik.canvas.Acttivities;
 
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -39,6 +40,12 @@ public class MainActivity extends ActionBarActivity {
             bindService(playIntent, musicConnection, this.BIND_AUTO_CREATE);
             startService(playIntent);
         }
+        getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+
+            }
+        });
     }
     public ServiceConnection musicConnection = new ServiceConnection() {
         @Override
@@ -125,7 +132,7 @@ public class MainActivity extends ActionBarActivity {
             case R.id.action_end:
                 stopService(playIntent);
                 musicService = null;
-                finish();
+                System.exit(0);
                 break;
         }
 //        noinspection SimplifiableIfStatement
@@ -155,8 +162,9 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void onBackPressed() {
         if(getFragmentManager().getBackStackEntryCount() == 0){
-            this.finish();
+            super.onBackPressed();
         }
+
         else
             getFragmentManager().popBackStack();
     }
@@ -177,7 +185,7 @@ public class MainActivity extends ActionBarActivity {
         // Start Main fragment after service connection. Just to pass song list otherwise Fragment called first then service,
         // which gives NULL pointer Exception
         MusicFragment musicFragment = new MusicFragment();
-        getFragmentManager().beginTransaction().replace(R.id.mainContainer, musicFragment,MusicFragment.TAG).commit();
+        getFragmentManager().beginTransaction().replace(R.id.mainContainer, musicFragment, MusicFragment.TAG).addToBackStack(null).commit();
     }
 
     /**

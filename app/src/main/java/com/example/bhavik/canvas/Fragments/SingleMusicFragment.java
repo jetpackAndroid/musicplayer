@@ -157,7 +157,7 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
                     //setImageDrawable null to avoid imposing of one image on another.
                     playPause.setImageDrawable(null);
                     playPause.setBackgroundResource(R.drawable.pause_button_img);
-                    playMusic();
+                    startMusic();
                 }
                 break;
 
