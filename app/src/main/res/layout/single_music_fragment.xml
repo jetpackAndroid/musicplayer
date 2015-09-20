@@ -9,12 +9,15 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         >
-        <ImageView
+        <!--<ImageView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="390dp"-->
+        <!--android:id="@+id/singleMusicAlbumArt"-->
+        <!--/>-->
+        <ViewPager
             android:layout_width="match_parent"
             android:layout_height="390dp"
-
-            android:id="@+id/singleMusicAlbumArt"
-            />
+            android:id="@+id/viewPager"></ViewPager>
         <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

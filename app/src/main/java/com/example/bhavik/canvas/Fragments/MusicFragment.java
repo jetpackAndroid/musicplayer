@@ -82,9 +82,9 @@ public class MusicFragment extends BaseFragment implements AdapterView.OnItemCli
         else {
             songList = (ArrayList) savedInstanceState.getSerializable("SavedInstance");
         }
-        songAdapter = new SongAdapter(MainActivity.getMainActivity(), songList, this );
+        songAdapter = SongAdapter.getSongAdapterInstance(MainActivity.getMainActivity(), songList);
         songsView.setAdapter(songAdapter);
-//        songsView.setOnItemClickListener(this);
+        songsView.setOnItemClickListener(MusicFragment.this);
 //        setController();
         return view;
     }

@@ -10,6 +10,8 @@ import com.example.bhavik.canvas.Interfaces.MusicFunctionInterface;
 import com.example.bhavik.canvas.Modal.Songs;
 import com.example.bhavik.canvas.Service.MusicService;
 
+import java.util.ArrayList;
+
 public class BaseFragment extends Fragment implements MusicFunctionInterface {
 
     public BaseFragment() {
@@ -77,6 +79,11 @@ public class BaseFragment extends Fragment implements MusicFunctionInterface {
     }
 
     @Override
+    public ArrayList<Songs> getCompleteSongList() {
+        return getMusicService().getCompleteSongList();
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
     }
@@ -120,4 +127,5 @@ public class BaseFragment extends Fragment implements MusicFunctionInterface {
     public void onDetach() {
         super.onDetach();
     }
+
 }

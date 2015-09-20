@@ -3,6 +3,8 @@ package com.example.bhavik.canvas.Interfaces;
 import com.example.bhavik.canvas.Modal.Songs;
 import com.example.bhavik.canvas.Service.MusicService;
 
+import java.util.ArrayList;
+
 /**
  * Created by Bhavik on 9/12/2015.
  */
@@ -31,4 +33,6 @@ public interface MusicFunctionInterface {
     int getCurrentMusicPosition();
 
     Songs getCurrentPlayingSong();
+
+    ArrayList<Songs> getCompleteSongList();
 }

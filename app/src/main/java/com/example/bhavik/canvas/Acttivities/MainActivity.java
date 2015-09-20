@@ -55,6 +55,10 @@ public class MainActivity extends ActionBarActivity {
             musicService = binder.getService();
 
             MainActivity.setMusicService(musicService);
+            // Start Main fragment after service connection. Just to pass song list otherwise Fragment will be called first then service,
+            // which gives NULL pointer Exception
+            MusicFragment musicFragment = new MusicFragment();
+            getFragmentManager().beginTransaction().replace(R.id.mainContainer, musicFragment, MusicFragment.TAG).addToBackStack(null).commit();
             musicBound = true;
         }
 
@@ -164,7 +168,6 @@ public class MainActivity extends ActionBarActivity {
         if(getFragmentManager().getBackStackEntryCount() == 0){
             super.onBackPressed();
         }
-
         else
             getFragmentManager().popBackStack();
     }
@@ -182,10 +185,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        // Start Main fragment after service connection. Just to pass song list otherwise Fragment called first then service,
-        // which gives NULL pointer Exception
-        MusicFragment musicFragment = new MusicFragment();
-        getFragmentManager().beginTransaction().replace(R.id.mainContainer, musicFragment, MusicFragment.TAG).addToBackStack(null).commit();
+
     }
 
     /**
@@ -198,5 +198,19 @@ public class MainActivity extends ActionBarActivity {
     public void pauseMusic() {
         MainActivity.musicService.pausePlayer();
     }
+
+    /**
+     * Callback method to be invoked when an item in this AdapterView has
+     * been clicked.
+     * <p/>
+     * Implementers can call getItemAtPosition(position) if they need
+     * to access the data associated with the selected item.
+     *
+     * @param parent   The AdapterView where the click happened.
+     * @param view     The view within the AdapterView that was clicked (this
+     *                 will be a view provided by the adapter)
+     * @param position The position of the view in the adapter.
+     * @param id       The row id of the item that was clicked.
+     */
 
 }

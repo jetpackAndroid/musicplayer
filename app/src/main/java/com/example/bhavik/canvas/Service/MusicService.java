@@ -147,6 +147,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         currentPlayingSong = playSong;
     }
 
+    public ArrayList<Songs> getCompleteSongList() {
+        return songs;
+    }
     public Songs getCurrentPlayingSong() {
         if (isPng())
             return currentPlayingSong;

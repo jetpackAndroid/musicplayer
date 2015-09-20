@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,8 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.example.bhavik.canvas.Acttivities.MainActivity;
+import com.example.bhavik.canvas.CustomAdapters.CustomPagerAdapter;
+import com.example.bhavik.canvas.CustomAdapters.SongAdapter;
 import com.example.bhavik.canvas.Modal.Songs;
 import com.example.bhavik.canvas.R;
 
@@ -29,8 +33,12 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
     public static ImageView playPause, stepBackward, stepForward, albumArt;
     public static SeekBar seekBar;
     Handler handler;
+    public SongAdapter songAdapter;
     static int currentSongDuration;
     Songs song = null, currentPlayingSong = null;
+    public ViewPager viewPager;
+    public PagerAdapter pagerAdapter;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,14 +65,17 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
 
         View view = inflater.inflate(R.layout.single_music_fragment, container, false);
         handler = new Handler();
-
+        songAdapter = SongAdapter.getSongAdapterInstance(MainActivity.getMainActivity(), getCompleteSongList());
         Toast.makeText(MainActivity.getMainActivity(), "Fragment Applied", Toast.LENGTH_LONG).show();
         // find elements
         playPause = (ImageView) view.findViewById(R.id.playPause);
         stepBackward = (ImageView) view.findViewById(R.id.stepBackward);
         stepForward = (ImageView) view.findViewById(R.id.stepForward);
-        albumArt = (ImageView) view.findViewById(R.id.singleMusicAlbumArt);
+//        albumArt = (ImageView) view.findViewById(R.id.singleMusicAlbumArt);
         seekBar = (SeekBar) view.findViewById(R.id.songSeekbar);
+        viewPager = (ViewPager) view.findViewById(R.id.viewPager);
+        pagerAdapter = new CustomPagerAdapter(MainActivity.getMainActivity().getSupportFragmentManager());
+        viewPager.setAdapter(pagerAdapter);
         // set listeners
         playPause.setOnClickListener(SingleMusicFragment.this);
         stepBackward.setOnClickListener(SingleMusicFragment.this);
