@@ -84,6 +84,11 @@ public class BaseFragment extends Fragment implements MusicFunctionInterface {
     }
 
     @Override
+    public int currentSongIndex() {
+        return MainActivity.getMusicService().getSongIndex();
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
     }

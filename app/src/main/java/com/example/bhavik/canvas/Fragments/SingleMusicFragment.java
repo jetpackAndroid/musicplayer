@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +35,7 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
     static int currentSongDuration;
     Songs song = null, currentPlayingSong = null;
     public ViewPager viewPager;
-    public PagerAdapter pagerAdapter;
+    public CustomPagerAdapter pagerAdapter;
 
 
     @Override
@@ -67,27 +65,31 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
         handler = new Handler();
         songAdapter = SongAdapter.getSongAdapterInstance(MainActivity.getMainActivity(), getCompleteSongList());
         Toast.makeText(MainActivity.getMainActivity(), "Fragment Applied", Toast.LENGTH_LONG).show();
-        // find elements
+
+//         find elements
         playPause = (ImageView) view.findViewById(R.id.playPause);
         stepBackward = (ImageView) view.findViewById(R.id.stepBackward);
         stepForward = (ImageView) view.findViewById(R.id.stepForward);
 //        albumArt = (ImageView) view.findViewById(R.id.singleMusicAlbumArt);
         seekBar = (SeekBar) view.findViewById(R.id.songSeekbar);
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
-        pagerAdapter = new CustomPagerAdapter(MainActivity.getMainActivity().getSupportFragmentManager());
+
+//        set adapter
+        pagerAdapter = new CustomPagerAdapter(getCompleteSongList(), MainActivity.getMainActivity(), currentSongIndex());
+        viewPager.setCurrentItem(currentSongIndex());
+//        viewPager.setBackgroundColor(Color.RED);
         viewPager.setAdapter(pagerAdapter);
-        // set listeners
+
+//         set listeners
         playPause.setOnClickListener(SingleMusicFragment.this);
         stepBackward.setOnClickListener(SingleMusicFragment.this);
         stepForward.setOnClickListener(SingleMusicFragment.this);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int mProgress;
-
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mProgress = progress;
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
 
@@ -101,8 +103,8 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
 
         if (checkMusicIsPlaying())
             setSongConstraints();
-        else if (song != null)
-            albumArt.setImageURI(Uri.parse(song.getAlbumArtPath()));
+//        else if (song != null)
+//            albumArt.setImageURI(Uri.parse(song.getAlbumArtPath()));
 
         seekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY));
         return view;
@@ -111,7 +113,7 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
     public void setSongConstraints() {
         currentPlayingSong = getCurrentPlayingSong();
         if (currentPlayingSong != null) {
-            albumArt.setImageURI(Uri.parse(currentPlayingSong.getAlbumArtPath()));
+//            albumArt.setImageURI(Uri.parse(currentPlayingSong.getAlbumArtPath()));
             currentSongDuration = getMusicDuration();
         }
     }
@@ -205,7 +207,7 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
             if (bundle.containsKey("CurrentSong")) {
                 Songs currentSong = (Songs) bundle.getSerializable("CurrentSong");
                 SingleMusicFragment.seekBar.setMax(currentSong.getDuration());
-                SingleMusicFragment.albumArt.setImageURI(Uri.parse(currentSong.getAlbumArtPath()));
+//                SingleMusicFragment.albumArt.setImageURI(Uri.parse(currentSong.getAlbumArtPath()));
             }
         }
     }

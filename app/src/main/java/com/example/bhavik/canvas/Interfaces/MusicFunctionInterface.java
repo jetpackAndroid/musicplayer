@@ -35,4 +35,6 @@ public interface MusicFunctionInterface {
     Songs getCurrentPlayingSong();
 
     ArrayList<Songs> getCompleteSongList();
+
+    int currentSongIndex();
 }
