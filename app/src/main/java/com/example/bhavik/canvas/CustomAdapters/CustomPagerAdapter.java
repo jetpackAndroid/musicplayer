@@ -1,6 +1,7 @@
 package com.example.bhavik.canvas.CustomAdapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +45,7 @@ public class CustomPagerAdapter extends PagerAdapter {
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View itemView = inflater.inflate(R.layout.view_pager_item, container, false);
         imageView = (ImageView) itemView.findViewById(R.id.songAlbumArt);
-//        imageView.setImageURI(Uri.parse(mSongsArrayList.get(position).getAlbumArtPath()));
+        imageView.setImageURI(Uri.parse(mSongsArrayList.get(position).getAlbumArtPath()));
         //   imageView.setBackgroundColor(Color.GREEN);
         container.addView(itemView);
 
@@ -53,7 +54,7 @@ public class CustomPagerAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
-        return false;
+        return (view.equals(object));
     }
 
     @Override
