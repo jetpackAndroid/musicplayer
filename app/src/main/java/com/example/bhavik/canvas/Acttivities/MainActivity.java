@@ -48,6 +48,13 @@ public class MainActivity extends ActionBarActivity {
             }
         });
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+    }
+
     public ServiceConnection musicConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -166,11 +173,11 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        if(getFragmentManager().getBackStackEntryCount() == 0){
+        getSupportFragmentManager().popBackStack();
+
+        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
             super.onBackPressed();
         }
-        else
-            getFragmentManager().popBackStack();
     }
 
     @Override
