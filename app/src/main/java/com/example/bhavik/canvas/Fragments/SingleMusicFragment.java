@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ import com.example.bhavik.canvas.R;
 public class SingleMusicFragment extends BaseFragment implements View.OnClickListener {
 
     public static final String TAG = SingleMusicFragment.class.getSimpleName();
-    public static ImageView playPause, stepBackward, stepForward, albumArt;
+    public static ImageView playPause, stepBackward, stepForward;
     public static SeekBar seekBar;
     Handler handler;
     public SongAdapter songAdapter;
@@ -36,7 +37,8 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
     Songs song = null, currentPlayingSong = null;
     public ViewPager viewPager;
     public CustomPagerAdapter pagerAdapter;
-
+    ImageView albumArtImageView;
+    View mView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,7 +72,6 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
         playPause = (ImageView) view.findViewById(R.id.playPause);
         stepBackward = (ImageView) view.findViewById(R.id.stepBackward);
         stepForward = (ImageView) view.findViewById(R.id.stepForward);
-//        albumArt = (ImageView) view.findViewById(R.id.singleMusicAlbumArt);
         seekBar = (SeekBar) view.findViewById(R.id.songSeekbar);
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
 
@@ -79,17 +80,35 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
         viewPager.setCurrentItem(currentSongIndex());
 //        viewPager.setBackgroundColor(Color.RED);
         viewPager.setAdapter(pagerAdapter);
-
+        viewPager.setCurrentItem(currentSongIndex());
 //         set listeners
         playPause.setOnClickListener(SingleMusicFragment.this);
         stepBackward.setOnClickListener(SingleMusicFragment.this);
         stepForward.setOnClickListener(SingleMusicFragment.this);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                Log.d("demo", "onPageScrolled");
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setMusicAtSwipedPosition(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                Log.d("demo", "onPageScrollStateChanged");
+            }
+        });
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int mProgress;
+
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mProgress = progress;
             }
+
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
 
@@ -103,8 +122,6 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
 
         if (checkMusicIsPlaying())
             setSongConstraints();
-//        else if (song != null)
-//            albumArt.setImageURI(Uri.parse(song.getAlbumArtPath()));
 
         seekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY));
         return view;
@@ -175,10 +192,13 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
                 break;
 
             case R.id.stepBackward:
+                viewPager.setCurrentItem(currentSongIndex() - 1);
                 playPrevious();
+
                 break;
 
             case R.id.stepForward:
+                viewPager.setCurrentItem(currentSongIndex() + 1);
                 playNext();
                 break;
 

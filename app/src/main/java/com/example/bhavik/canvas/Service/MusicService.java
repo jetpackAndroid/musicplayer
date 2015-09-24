@@ -128,7 +128,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
                 currentSong);
         try{
             mediaPlayer.setDataSource(getApplicationContext(),trackUri);
-
         }
         catch (Exception e){
             e.printStackTrace();
@@ -142,8 +141,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         bundle.putSerializable("CurrentSong", playSong);
         message.setData(bundle);
         seekbarHandler.sendMessage(message);
-
-
         mediaPlayer.prepareAsync();
     }
 

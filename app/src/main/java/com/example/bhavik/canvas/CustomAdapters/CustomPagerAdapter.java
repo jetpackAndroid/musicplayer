@@ -40,13 +40,13 @@ public class CustomPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
 
-        ImageView imageView;
-
+        ImageView albumArtImageView;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View itemView = inflater.inflate(R.layout.view_pager_item, container, false);
-        imageView = (ImageView) itemView.findViewById(R.id.songAlbumArt);
-        imageView.setImageURI(Uri.parse(mSongsArrayList.get(position).getAlbumArtPath()));
-        //   imageView.setBackgroundColor(Color.GREEN);
+
+        albumArtImageView = (ImageView) itemView.findViewById(R.id.songAlbumArt);
+        albumArtImageView.setImageURI(Uri.parse(mSongsArrayList.get(position).getAlbumArtPath()));
+
         container.addView(itemView);
 
         return itemView;

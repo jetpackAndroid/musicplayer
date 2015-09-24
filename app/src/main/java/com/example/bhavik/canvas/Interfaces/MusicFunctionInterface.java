@@ -36,5 +36,7 @@ public interface MusicFunctionInterface {
 
     ArrayList<Songs> getCompleteSongList();
 
+    void setMusicAtSwipedPosition(int position);
+
     int currentSongIndex();
 }

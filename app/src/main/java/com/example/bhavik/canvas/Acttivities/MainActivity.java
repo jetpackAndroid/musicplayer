@@ -1,14 +1,14 @@
 package com.example.bhavik.canvas.Acttivities;
 
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +28,7 @@ public class MainActivity extends ActionBarActivity {
     boolean musicBound = false;
     String fragmentTAG = null;
     private static MainActivity mainActivity;
+    private Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,7 @@ public class MainActivity extends ActionBarActivity {
             bindService(playIntent, musicConnection, this.BIND_AUTO_CREATE);
             startService(playIntent);
         }
-        getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
 
@@ -58,7 +59,7 @@ public class MainActivity extends ActionBarActivity {
             // Start Main fragment after service connection. Just to pass song list otherwise Fragment will be called first then service,
             // which gives NULL pointer Exception
             MusicFragment musicFragment = new MusicFragment();
-            getFragmentManager().beginTransaction().replace(R.id.mainContainer, musicFragment, MusicFragment.TAG).addToBackStack(null).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer, musicFragment, MusicFragment.TAG).addToBackStack(null).commit();
             musicBound = true;
         }
 
@@ -79,13 +80,13 @@ public class MainActivity extends ActionBarActivity {
 
     public void applyFragment(String TAG, Bundle bundle){
         fragmentTAG = TAG;
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.mainContainer,getFragment(TAG,bundle)).addToBackStack(null).commitAllowingStateLoss();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.mainContainer, getFragment(TAG, bundle)).addToBackStack(null).commitAllowingStateLoss();
     }
     public Fragment getFragment(String tag, Bundle bundle){
         Fragment fragment = null;
         if(tag.equalsIgnoreCase(SingleMusicFragment.class.getSimpleName())){
-            fragment = getFragmentManager().findFragmentByTag(tag);
+            fragment = getSupportFragmentManager().findFragmentByTag(tag);
             if(fragment == null){
                 fragment = new SingleMusicFragment();
             }

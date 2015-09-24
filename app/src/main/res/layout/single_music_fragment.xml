@@ -46,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:layout_gravity="left|center">
+                android:gravity="center">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -59,13 +59,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:layout_gravity="center">
+                android:gravity="center">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/pause_button_img"
                     android:id="@+id/playPause"
+                    android:layout_gravity="center"
                 />
             </LinearLayout>
 
@@ -73,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:layout_gravity="right|center">
+                android:gravity="center">
 
                 <ImageView
                     android:layout_width="wrap_content"
