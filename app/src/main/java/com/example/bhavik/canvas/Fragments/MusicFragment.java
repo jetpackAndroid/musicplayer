@@ -102,7 +102,6 @@ public class MusicFragment extends BaseFragment implements AdapterView.OnItemCli
         MainActivity.getMainActivity().passMusicList(songList);
         MainActivity.getMainActivity().passSelectedSongPosition(position);
         MainActivity.getMainActivity().applyFragment(SingleMusicFragment.TAG, bundle);
-        playMusic();
 
     }
 

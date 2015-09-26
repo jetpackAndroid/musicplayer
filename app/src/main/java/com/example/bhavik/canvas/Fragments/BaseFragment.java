@@ -60,6 +60,11 @@ public class BaseFragment extends Fragment implements MusicFunctionInterface {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public int getCurrentMusicPosition() {
         return getMusicService().getPosn();
     }

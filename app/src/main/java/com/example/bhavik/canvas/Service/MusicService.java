@@ -16,6 +16,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
 
+import com.example.bhavik.canvas.Action.action;
 import com.example.bhavik.canvas.Acttivities.MainActivity;
 import com.example.bhavik.canvas.Fragments.SingleMusicFragment;
 import com.example.bhavik.canvas.Modal.Songs;
@@ -35,7 +36,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     //To remove seekbar callback of a song on next song
     Handler handler = new Handler();
     // Current playing song variable.
-    Songs currentPlayingSong;
+    Songs currentPlayingSong = null;
     private final IBinder musicBind = new MusicBinder();
 
     private String songTitle="";
@@ -44,7 +45,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private boolean shuffle=false;
     private Random rand;
 
-    SingleMusicFragment.SeekbarHandler seekbarHandler;
+    public SingleMusicFragment.SeekbarHandler seekbarHandler;
 
     public MusicService() {
     }
@@ -56,6 +57,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mediaPlayer = new MediaPlayer();
         initMusicPlayer();
         rand=new Random();
+
+        // Setting Handler for setting album art and duration.
+        seekbarHandler = new SingleMusicFragment().new SeekbarHandler();
+
     }
 
     public void initMusicPlayer(){
@@ -114,13 +119,12 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void playSong(){
-        // Setting Handler for setting album art and duration.
-        seekbarHandler = new SingleMusicFragment.SeekbarHandler();
+
+        Message message = Message.obtain();
+        Bundle bundle = new Bundle();
 
         mediaPlayer.reset();
         Songs playSong = songs.get(songPosition);
-        // Save current playing song, to give access to other class.
-
         songTitle = playSong.getTitle();
         long currentSong = playSong.getId();
         Uri trackUri = ContentUris.withAppendedId(
@@ -132,16 +136,15 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         catch (Exception e){
             e.printStackTrace();
         }
-//        SingleMusicFragment.seekBar.setMax(getDur());
+        // Save current playing song, to give access to other class.
         setCurrentSong(playSong);
+//         Pass Duration in message.
+//        bundle.putSerializable("CurrentSong", playSong);
+//        message.setData(bundle);
+//        seekbarHandler.sendMessage(message);
 
-        // Pass Duration in message.
-        Message message = Message.obtain();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("CurrentSong", playSong);
-        message.setData(bundle);
-        seekbarHandler.sendMessage(message);
         mediaPlayer.prepareAsync();
+        seekbarHandler.sendMessage(seekbarHandler.obtainMessage(action.PLAY_SONG));
     }
 
     public void setCurrentSong(Songs playSong) {
@@ -152,10 +155,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         return songs;
     }
     public Songs getCurrentPlayingSong() {
-        if (isPng())
             return currentPlayingSong;
-        else
-            return null;
     }
 
     public int getPosn(){
@@ -193,12 +193,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public void playNext(){
 
         // Remove previous Callback and pass another call back for music duration when song changed automatically.
-
         handler.removeCallbacksAndMessages(new SingleMusicFragment());
-
-
-
-
         if(shuffle){
             int newSong=songPosition;
             while(newSong == songPosition){
@@ -212,7 +207,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
         playSong();
     }
-
     public void setShuffle(){
         if(shuffle) shuffle=false;
         else shuffle=true;
@@ -257,6 +251,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         if(mediaPlayer.getCurrentPosition() > 0 ){
             mediaPlayer.reset();
             playNext();
+
         }
     }
 

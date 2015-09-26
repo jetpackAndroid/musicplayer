@@ -47,6 +47,7 @@ public class CustomPagerAdapter extends PagerAdapter {
         albumArtImageView = (ImageView) itemView.findViewById(R.id.songAlbumArt);
         albumArtImageView.setImageURI(Uri.parse(mSongsArrayList.get(position).getAlbumArtPath()));
 
+
         container.addView(itemView);
 
         return itemView;

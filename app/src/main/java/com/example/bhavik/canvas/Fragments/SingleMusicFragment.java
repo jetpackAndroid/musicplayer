@@ -15,8 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.Toast;
+import android.widget.TextView;
 
+import com.example.bhavik.canvas.Action.action;
 import com.example.bhavik.canvas.Acttivities.MainActivity;
 import com.example.bhavik.canvas.CustomAdapters.CustomPagerAdapter;
 import com.example.bhavik.canvas.CustomAdapters.SongAdapter;
@@ -33,12 +34,12 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
     public static SeekBar seekBar;
     Handler handler;
     public SongAdapter songAdapter;
+    public static TextView songDetails, songDuration;
     static int currentSongDuration;
     Songs song = null, currentPlayingSong = null;
-    public ViewPager viewPager;
+    public static ViewPager viewPager;
     public CustomPagerAdapter pagerAdapter;
     ImageView albumArtImageView;
-    View mView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,13 +61,20 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.single_music_fragment, container, false);
+        // Play song here instead of MusicFragment to avoid nullpointer in service for albumart issue.
+        playMusic();
+
         handler = new Handler();
         songAdapter = SongAdapter.getSongAdapterInstance(MainActivity.getMainActivity(), getCompleteSongList());
-        Toast.makeText(MainActivity.getMainActivity(), "Fragment Applied", Toast.LENGTH_LONG).show();
 
 //         find elements
         playPause = (ImageView) view.findViewById(R.id.playPause);
@@ -74,13 +82,13 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
         stepForward = (ImageView) view.findViewById(R.id.stepForward);
         seekBar = (SeekBar) view.findViewById(R.id.songSeekbar);
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
-
+        songDetails = (TextView) view.findViewById(R.id.songDetail);
+        songDuration = (TextView) view.findViewById(R.id.songDuration);
 //        set adapter
         pagerAdapter = new CustomPagerAdapter(getCompleteSongList(), MainActivity.getMainActivity(), currentSongIndex());
         viewPager.setCurrentItem(currentSongIndex());
-//        viewPager.setBackgroundColor(Color.RED);
         viewPager.setAdapter(pagerAdapter);
-        viewPager.setCurrentItem(currentSongIndex());
+
 //         set listeners
         playPause.setOnClickListener(SingleMusicFragment.this);
         stepBackward.setOnClickListener(SingleMusicFragment.this);
@@ -94,6 +102,10 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
             @Override
             public void onPageSelected(int position) {
                 setMusicAtSwipedPosition(position);
+                playPause.setImageDrawable(null);
+                playPause.setBackgroundResource(R.drawable.pause_button_img);
+//                songDetails.setText(getCurrentPlayingSong().getTitle() + " / " + getCurrentPlayingSong().getArtist());
+//                songDuration.setText(getCurrentMusicPosition() + " / " + getMusicDuration());
             }
 
             @Override
@@ -146,6 +158,13 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
         @Override
         public void run() {
             seekBar.setProgress(getCurrentMusicPosition());
+            if (checkMusicIsPlaying()) {
+                int eMinutes = getCurrentMusicPosition() / 60000;
+                float eSeconds = getCurrentMusicPosition() % 60000;
+                int tMinutes = getMusicDuration() / 60000;
+                float tSeconds = getMusicDuration() % 60000;
+                songDuration.setText(eMinutes + ":" + eSeconds + " / " + tMinutes + ":" + tSeconds);
+            }
             handler.postDelayed(seekBarUpdate, 100);
         }
     };
@@ -154,6 +173,16 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
     public void onStop() {
         super.onStop();
         seekBarUpdater(false);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
@@ -192,13 +221,12 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
                 break;
 
             case R.id.stepBackward:
-                viewPager.setCurrentItem(currentSongIndex() - 1);
-                playPrevious();
-
+                if (currentSongIndex() > 0)
+                    playPrevious();
                 break;
 
             case R.id.stepForward:
-                viewPager.setCurrentItem(currentSongIndex() + 1);
+                // TODO Put condition if current song index is equal to last song then it should not
                 playNext();
                 break;
 
@@ -207,7 +235,7 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
         }
     }
 
-    public static class SeekbarHandler extends Handler {
+    public class SeekbarHandler extends Handler {
 
 
         /**
@@ -218,17 +246,21 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
          * so an exception is thrown.
          */
         public SeekbarHandler() {
+
         }
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Bundle bundle = msg.getData();
-            if (bundle.containsKey("CurrentSong")) {
-                Songs currentSong = (Songs) bundle.getSerializable("CurrentSong");
-                SingleMusicFragment.seekBar.setMax(currentSong.getDuration());
-//                SingleMusicFragment.albumArt.setImageURI(Uri.parse(currentSong.getAlbumArtPath()));
+            switch (msg.what) {
+                case action.PLAY_SONG:
+                    SingleMusicFragment.seekBar.setMax(getCurrentPlayingSong().getDuration());
+                    songDetails.setText(getCurrentPlayingSong().getTitle() + " / " + getCurrentPlayingSong().getArtist());
+                    songDetails.setSelected(true);
+                    SingleMusicFragment.viewPager.setCurrentItem(currentSongIndex());
+                    break;
             }
+
         }
     }
 }
