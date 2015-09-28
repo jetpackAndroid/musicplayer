@@ -70,6 +70,8 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.single_music_fragment, container, false);
+        MainActivity.getMainActivity().getSupportActionBar().hide();
+
         // Play song here instead of MusicFragment to avoid nullpointer in service for albumart issue.
         playMusic();
 
