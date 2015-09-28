@@ -37,6 +37,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     Handler handler = new Handler();
     // Current playing song variable.
     Songs currentPlayingSong = null;
+    Notification notification;
+    PendingIntent pi;
     private final IBinder musicBind = new MusicBinder();
 
     private String songTitle="";
@@ -44,6 +46,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     private boolean shuffle=false;
     private Random rand;
+    NotificationManager notificationManager;
 
     public SingleMusicFragment.SeekbarHandler seekbarHandler;
 
@@ -145,6 +148,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
         mediaPlayer.prepareAsync();
         seekbarHandler.sendMessage(seekbarHandler.obtainMessage(action.PLAY_SONG));
+        notificationLauncher(true);
     }
 
     public void setCurrentSong(Songs playSong) {
@@ -172,6 +176,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     public void pausePlayer(){
         mediaPlayer.pause();
+        notificationLauncher(false);
     }
 
     public void seek(int posn){
@@ -180,6 +185,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     public void go(){
         mediaPlayer.start();
+        notificationLauncher(true);
     }
 
     public void playPrev(){
@@ -219,26 +225,30 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     }
 
+    public void notificationLauncher(boolean notify) {
+        if (notify) {
+            notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            //      assign the song name to songName
+            pi = PendingIntent.getActivity(MainActivity.getMainActivity(), 0,
+                    new Intent(MainActivity.getMainActivity(), MainActivity.class),
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+            notification = new Notification();
+            notification.tickerText = "Ticker Text";
+            notification.icon = R.drawable.playgreen;
+            notification.flags |= Notification.FLAG_ONGOING_EVENT;
+            notification.setLatestEventInfo(getApplicationContext(), "MusicPlayerSample",
+                    "Playing: " + songTitle, pi);
+            //        startForeground(NOTIFY_ID, notification);
+            notificationManager.notify(NOTIFY_ID, notification);
+        } else {
+            if (notificationManager != null)
+                notificationManager.cancel(NOTIFY_ID);
+        }
+    }
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
         mediaPlayer.start();
-//      assign the song name to songName
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-        PendingIntent pi = PendingIntent.getActivity(MainActivity.getMainActivity(), 0,
-                new Intent(MainActivity.getMainActivity(), MainActivity.class),
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        Notification notification = new Notification();
-        notification.tickerText = "Ticker Text";
-        notification.icon = R.drawable.playgreen;
-        notification.flags |= Notification.FLAG_ONGOING_EVENT;
-        notification.setLatestEventInfo(getApplicationContext(), "MusicPlayerSample",
-                "Playing: " + songTitle, pi);
-
-//        notificationManager.notify(NOTIFY_ID,notification);
-        startForeground(NOTIFY_ID, notification);
     }
-
 
     @Override
     public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
