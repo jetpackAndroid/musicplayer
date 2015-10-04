@@ -35,6 +35,14 @@ public class MusicFragment extends BaseFragment implements AdapterView.OnItemCli
         // Required empty public constructor
     }
 
+    public static MusicFragment init(int position) {
+        MusicFragment musicFragment = new MusicFragment();
+        // supply position as a value of argument.
+        Bundle bundle = new Bundle();
+        bundle.putInt("POSITION", position);
+        musicFragment.setArguments(bundle);
+        return musicFragment;
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

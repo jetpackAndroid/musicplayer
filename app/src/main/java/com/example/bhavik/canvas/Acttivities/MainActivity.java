@@ -9,11 +9,15 @@ import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
 
-import com.example.bhavik.canvas.Fragments.MusicFragment;
+import com.example.bhavik.canvas.CustomAdapters.CustomFragmentStatePagerAdapter;
+import com.example.bhavik.canvas.CustomViews.SlidingTabLayout;
 import com.example.bhavik.canvas.Fragments.SingleMusicFragment;
 import com.example.bhavik.canvas.Modal.Songs;
 import com.example.bhavik.canvas.R;
@@ -29,6 +33,12 @@ public class MainActivity extends ActionBarActivity {
     String fragmentTAG = null;
     private static MainActivity mainActivity;
     private Fragment currentFragment;
+    private ViewPager viewPager;
+    private FrameLayout mainContainer;
+    private SlidingTabLayout musicTabs;
+    private CustomFragmentStatePagerAdapter customFragmentStatePagerAdapter;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +51,17 @@ public class MainActivity extends ActionBarActivity {
             bindService(playIntent, musicConnection, this.BIND_AUTO_CREATE);
             startService(playIntent);
         }
+
+        viewPager = (ViewPager) findViewById(R.id.mainPager);
+
+
+        musicTabs = (SlidingTabLayout) findViewById(R.id.musicTabs);
+        musicTabs.setDistributeEvenly(true);
+
+
+        customFragmentStatePagerAdapter = new CustomFragmentStatePagerAdapter(getSupportFragmentManager());
+        mainContainer = (FrameLayout) findViewById(R.id.mainContainer);
+
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
@@ -65,8 +86,13 @@ public class MainActivity extends ActionBarActivity {
             MainActivity.setMusicService(musicService);
             // Start Main fragment after service connection. Just to pass song list otherwise Fragment will be called first then service,
             // which gives NULL pointer Exception
-            MusicFragment musicFragment = new MusicFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer, musicFragment, MusicFragment.TAG).addToBackStack(null).commit();
+//            MusicFragment musicFragment = new MusicFragment();
+//            getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer, musicFragment, MusicFragment.TAG).addToBackStack(null).commit();
+            viewPager.setAdapter(customFragmentStatePagerAdapter);
+
+//            Always pass view pager after setting adapter to pager.
+            musicTabs.setViewPager(viewPager);
+
             musicBound = true;
         }
 
@@ -95,6 +121,8 @@ public class MainActivity extends ActionBarActivity {
         if(tag.equalsIgnoreCase(SingleMusicFragment.class.getSimpleName())){
             fragment = getSupportFragmentManager().findFragmentByTag(tag);
             if(fragment == null){
+                viewPager.setVisibility(View.GONE);
+                musicTabs.setVisibility(View.GONE);
                 fragment = new SingleMusicFragment();
             }
             if(bundle != null){
@@ -175,8 +203,14 @@ public class MainActivity extends ActionBarActivity {
     public void onBackPressed() {
         getSupportFragmentManager().popBackStack();
 
-        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             super.onBackPressed();
+        } else if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+            viewPager.setVisibility(View.VISIBLE);
+            musicTabs.setVisibility(View.VISIBLE);
+            getSupportActionBar().show();
+
+            viewPager.setCurrentItem(0);
         }
     }
 
@@ -206,19 +240,5 @@ public class MainActivity extends ActionBarActivity {
     public void pauseMusic() {
         MainActivity.musicService.pausePlayer();
     }
-
-    /**
-     * Callback method to be invoked when an item in this AdapterView has
-     * been clicked.
-     * <p/>
-     * Implementers can call getItemAtPosition(position) if they need
-     * to access the data associated with the selected item.
-     *
-     * @param parent   The AdapterView where the click happened.
-     * @param view     The view within the AdapterView that was clicked (this
-     *                 will be a view provided by the adapter)
-     * @param position The position of the view in the adapter.
-     * @param id       The row id of the item that was clicked.
-     */
 
 }

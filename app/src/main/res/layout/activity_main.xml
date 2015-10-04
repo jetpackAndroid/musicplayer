@@ -4,11 +4,25 @@
     android:orientation="vertical"
    tools:context=".MainActivity">
 
+    <com.example.bhavik.canvas.CustomViews.SlidingTabLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="2dp"
+        android:id="@+id/musicTabs"
+
+        ></com.example.bhavik.canvas.CustomViews.SlidingTabLayout>
+
+    <android.support.v4.view.ViewPager
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mainPager"></android.support.v4.view.ViewPager>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/mainContainer">
+        android:id="@+id/mainContainer"
+        android:background="@android:color/black">
+
     </FrameLayout>
 
 </LinearLayout>
