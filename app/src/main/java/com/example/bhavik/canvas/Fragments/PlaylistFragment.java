@@ -43,9 +43,6 @@ public class PlaylistFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.album_fragment, container, false);
         Toast.makeText(MainActivity.getMainActivity(), " " + getArguments().getInt("val"), Toast.LENGTH_LONG).show();
 
-        dummyTextView = (TextView) view.findViewById(R.id.dummytextview);
-        dummyTextView.setText(" " +
-                "" + fragmentPosition);
         return view;
     }
 

@@ -3,6 +3,9 @@ package com.example.bhavik.canvas.Fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.example.bhavik.canvas.Acttivities.MainActivity;
@@ -17,6 +20,22 @@ public class BaseFragment extends Fragment implements MusicFunctionInterface {
     public BaseFragment() {
         // Required empty public constructor
     }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
