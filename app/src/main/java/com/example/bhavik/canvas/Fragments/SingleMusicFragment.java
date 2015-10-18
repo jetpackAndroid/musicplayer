@@ -39,7 +39,6 @@ public class SingleMusicFragment extends BaseFragment implements View.OnClickLis
     Songs song = null, currentPlayingSong = null;
     public static ViewPager viewPager;
     public CustomPagerAdapter pagerAdapter;
-    ImageView albumArtImageView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

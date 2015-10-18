@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.bhavik.canvas.Modal.Songs;
 import com.example.bhavik.canvas.R;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 
@@ -24,7 +25,7 @@ public final class SongAdapter extends BaseAdapter {
     private LayoutInflater layoutInflater;
     private Context mContext;
     private static SongAdapter songAdapterInstance = null;
-
+    private SlidingUpPanelLayout slidingUpPanelLayout;
     private SongAdapter(Context context, ArrayList<Songs> theList) {
         this.songsList = theList;
         mContext = context;

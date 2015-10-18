@@ -137,6 +137,7 @@ public class AlbumFragment extends BaseFragment {
         }
     }
 
+
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);

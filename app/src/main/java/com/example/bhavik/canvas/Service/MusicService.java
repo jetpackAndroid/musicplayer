@@ -48,7 +48,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private Random rand;
     NotificationManager notificationManager;
 
-    public SingleMusicFragment.SeekbarHandler seekbarHandler;
+    public MainActivity.SeekbarHandler seekbarHandler;
 
     public MusicService() {
     }
@@ -62,7 +62,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         rand=new Random();
 
         // Setting Handler for setting album art and duration.
-        seekbarHandler = new SingleMusicFragment().new SeekbarHandler();
+        seekbarHandler = MainActivity.getMainActivity().new SeekbarHandler();
 
     }
 
@@ -183,6 +183,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mediaPlayer.seekTo(posn);
     }
 
+    //Starts the paused song
     public void go(){
         mediaPlayer.start();
         notificationLauncher(true);

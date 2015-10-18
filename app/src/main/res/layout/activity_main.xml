@@ -1,28 +1,151 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
    tools:context=".MainActivity">
 
-    <com.example.bhavik.canvas.CustomViews.SlidingTabLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="2dp"
-        android:id="@+id/musicTabs"
-
-        ></com.example.bhavik.canvas.CustomViews.SlidingTabLayout>
-
-    <android.support.v4.view.ViewPager
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/mainPager"></android.support.v4.view.ViewPager>
-
-    <FrameLayout
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/mainContainer"
-        android:background="@android:color/black">
+        android:gravity="bottom"
+        sothree:umanoPanelHeight="68dp"
+        sothree:umanoShadowHeight="4dp"
+        sothree:umanoParalaxOffset="100dp"
+        sothree:umanoDragView="@+id/dragView">
 
-    </FrameLayout>
+        <!-- MAIN CONTENT -->
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+            android:orientation="vertical">
 
-</LinearLayout>
+            <com.example.bhavik.canvas.CustomViews.SlidingTabLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="2dp"
+                android:id="@+id/musicTabs"></com.example.bhavik.canvas.CustomViews.SlidingTabLayout>
+
+            <android.support.v4.view.ViewPager
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/mainPager"></android.support.v4.view.ViewPager>
+
+        </LinearLayout>
+
+        <!-- SLIDING LAYOUT -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="false"
+            android:id="@+id/dragView">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="68dp"
+                android:orientation="horizontal"
+                android:background="@android:color/white"
+                android:onClick="onSlidingHeaderClick">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:id="@+id/songDetail"
+                    android:layout_weight="1"
+                    android:textColor="@android:color/white"
+                    android:ellipsize="marquee"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:textAlignment="gravity" />
+
+            </LinearLayout>
+
+            <!--<ImageView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:scaleType="fitStart"-->
+            <!--android:src="@drawable/cool_story"></ImageView>-->
+            <android.support.v4.view.ViewPager
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:id="@+id/viewPager"
+                android:layout_weight="7"></android.support.v4.view.ViewPager>
+
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:thumb="@null"
+                android:id="@+id/songSeekbar" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_weight="0.7"
+                android:id="@+id/songDuration"
+                android:textColor="@android:color/white" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_weight="1.1"
+                android:weightSum="9"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/previous_button_img"
+                        android:id="@+id/stepBackward" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/pause_button_img"
+                        android:id="@+id/playPause"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/next_button_img"
+                        android:id="@+id/stepForward" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+
+    <!--<FrameLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:id="@+id/mainContainer"-->
+    <!--android:background="@android:color/black">-->
+
+    <!--</FrameLayout>-->
+
+</RelativeLayout>

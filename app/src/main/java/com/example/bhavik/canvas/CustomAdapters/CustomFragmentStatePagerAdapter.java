@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.example.bhavik.canvas.Acttivities.MainActivity;
 import com.example.bhavik.canvas.Fragments.AlbumFragment;
 import com.example.bhavik.canvas.Fragments.ArtistFragment;
 import com.example.bhavik.canvas.Fragments.MusicFragment;
@@ -15,8 +16,11 @@ import com.example.bhavik.canvas.Fragments.RecetlyPlayedFragment;
  */
 public class CustomFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
-    public CustomFragmentStatePagerAdapter(FragmentManager fm) {
+    private MainActivity mActivity;
+
+    public CustomFragmentStatePagerAdapter(FragmentManager fm, MainActivity activity) {
         super(fm);
+        mActivity = activity;
     }
 
     /**
@@ -29,7 +33,7 @@ public class CustomFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
         switch (position) {
             case 0:
 //                MusicFragment will be called i.e All Music in a list will be shown.
-                return MusicFragment.init(position);
+                return MusicFragment.init(position, mActivity);
             case 1:
 //                Album
                 return AlbumFragment.init(position);
@@ -45,6 +49,8 @@ public class CustomFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
 
         }
+//        return MusicFragment.init(position, mActivity);
+
         return null;
     }
 

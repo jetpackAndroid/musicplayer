@@ -12,6 +12,7 @@ import com.example.bhavik.canvas.Acttivities.MainActivity;
 import com.example.bhavik.canvas.Interfaces.MusicFunctionInterface;
 import com.example.bhavik.canvas.Modal.Songs;
 import com.example.bhavik.canvas.Service.MusicService;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 
@@ -36,6 +37,10 @@ public class BaseFragment extends Fragment implements MusicFunctionInterface {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public SlidingUpPanelLayout getSlidingLayout() {
+        return MainActivity.mLayout;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -18,6 +18,7 @@ import com.example.bhavik.canvas.Acttivities.MainActivity;
 import com.example.bhavik.canvas.CustomAdapters.SongAdapter;
 import com.example.bhavik.canvas.Modal.Songs;
 import com.example.bhavik.canvas.R;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,19 +29,21 @@ public class MusicFragment extends BaseFragment implements AdapterView.OnItemCli
     private ArrayList<Songs> songList;
     private ListView songsView;
     View mView;
-    MainActivity mActivity;
+    public MainActivity mActivity;
+    public static MainActivity newActivity;
     public SongAdapter songAdapter;
 
     public MusicFragment() {
         // Required empty public constructor
     }
 
-    public static MusicFragment init(int position) {
+    public static MusicFragment init(int position, MainActivity activity) {
         MusicFragment musicFragment = new MusicFragment();
         // supply position as a value of argument.
         Bundle bundle = new Bundle();
         bundle.putInt("POSITION", position);
         musicFragment.setArguments(bundle);
+        newActivity = activity;
         return musicFragment;
     }
     @Override
@@ -65,7 +68,6 @@ public class MusicFragment extends BaseFragment implements AdapterView.OnItemCli
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.music_current_playing, container, false);
         mView = view;
-
         songsView = (ListView) view.findViewById(R.id.song_list);
 
         if (savedInstanceState == null)
@@ -84,6 +86,7 @@ public class MusicFragment extends BaseFragment implements AdapterView.OnItemCli
         }
         songAdapter = SongAdapter.getSongAdapterInstance(MainActivity.getMainActivity(), songList);
         songsView.setAdapter(songAdapter);
+        MainActivity mainActivity = newActivity;
         songsView.setOnItemClickListener(MusicFragment.this);
         return view;
     }
@@ -100,8 +103,15 @@ public class MusicFragment extends BaseFragment implements AdapterView.OnItemCli
         Log.d("demo", "position is " + position + "selected song model is " + selectedSong);
         MainActivity.getMainActivity().passMusicList(songList);
         MainActivity.getMainActivity().passSelectedSongPosition(position);
-        MainActivity.getMainActivity().applyFragment(SingleMusicFragment.TAG, bundle);
+//        MainActivity.getMainActivity().applyFragment(SingleMusicFragment.TAG, bundle);
+        if (mActivity != null) {
+            getSlidingLayout().setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+            playMusic();
+//            MainActivity.getMainActivity().applyFragment(SingleMusicFragment.TAG, null);
 
+//            startMusic();
+        } else
+            Log.e("MyCustomError", "mActivity is null in MusicFragment");
     }
 
 

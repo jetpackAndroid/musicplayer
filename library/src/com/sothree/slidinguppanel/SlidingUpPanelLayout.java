@@ -516,7 +516,8 @@ public class SlidingUpPanelLayout extends ViewGroup {
                             setPanelState(PanelState.EXPANDED);
                         }
                     } else {
-                        setPanelState(PanelState.COLLAPSED);
+//                        BJ Commented
+//                        setPanelState(PanelState.COLLAPSED);
                     }
                 }
             });

@@ -2,6 +2,7 @@ package com.example.bhavik.canvas.Interfaces;
 
 import com.example.bhavik.canvas.Modal.Songs;
 import com.example.bhavik.canvas.Service.MusicService;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 
@@ -39,4 +40,6 @@ public interface MusicFunctionInterface {
     void setMusicAtSwipedPosition(int position);
 
     int currentSongIndex();
+
+    SlidingUpPanelLayout getSlidingLayout();
 }
